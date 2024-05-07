@@ -1,0 +1,5 @@
+.main-window{
+    -fx-border-style: solid;
+        -fx-border-width: 2px 1px 3px 0; /* top right bottom left */
+        -fx-border-color: blue green orange red; /* top right bottom left */
+}
