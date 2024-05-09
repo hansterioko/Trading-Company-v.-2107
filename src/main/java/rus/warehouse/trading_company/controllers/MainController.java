@@ -24,20 +24,22 @@ public class MainController {
     public void OrderClick(MouseEvent mouseEvent) {
     }
 
-    public void purchClick(MouseEvent mouseEvent) {
-        try {
+    public void purchClick(MouseEvent mouseEvent) throws IOException {
+        //try {
             Stage stage = new Stage();
             FXMLLoader fxmlLoader = new FXMLLoader(RunApplication.class.getResource("purchase-view.fxml"));
             Scene scene = new Scene(fxmlLoader.load());
-            scene.getStylesheets().add(this.getClass().getResource("main.css").toExternalForm());
+//            String CHTO = this.getClass().getResource("purchase-view.fxml").toString();
+//            System.out.println(CHTO);
+            scene.getStylesheets().add(RunApplication.class.getResource("css/purchase.css").toExternalForm());
             stage.setTitle("Управление закупками");
             stage.setScene(scene);
             stage.show();
 
             Stage stageOld = (Stage) warehousePanel.getScene().getWindow();
             stageOld.close();
-        } catch (IOException e) {
-            System.out.println(LocalTime.now() + "   Ошибка открытия окна закупок!");
-        }
+//        } catch (IOException e) {
+//            System.out.println(LocalTime.now() + "   Ошибка открытия окна закупок!");
+//        }
     }
 }

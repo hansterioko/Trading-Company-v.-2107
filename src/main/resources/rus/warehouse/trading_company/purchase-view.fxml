@@ -11,10 +11,10 @@
       <TableView fx:id="purchaseTable" layoutX="14.0" layoutY="14.0" prefHeight="446.0" prefWidth="722.0" style="-fx-fixed-cell-size: 30;">
         <columns>
           <TableColumn fx:id="dateColumn" editable="false" prefWidth="167.20000648498535" resizable="false" text="Дата" />
-          <TableColumn fx:id="companyColumn" editable="false" prefWidth="253.5999755859375" resizable="false" text="Поставщик" />
-            <TableColumn fx:id="idColumn" prefWidth="75.0" text="id" visible="false" />
+          <TableColumn fx:id="companyColumn" editable="false" prefWidth="245.0" resizable="false" text="Поставщик" />
+            <TableColumn fx:id="idColumn" prefWidth="0.0" text="id" visible="false" />
             <TableColumn fx:id="costColumn" editable="false" prefWidth="186.40005493164062" resizable="false" text="Стоимость" />
-            <TableColumn fx:id="moreColumn" editable="false" minWidth="0.79998779296875" prefWidth="112.0" text=" " />
+            <TableColumn fx:id="moreColumn" editable="false" minWidth="0.79998779296875" prefWidth="100.0" text=" " />
         </columns>
       </TableView>
       <Button fx:id="backBtn" layoutX="834.0" layoutY="561.0" mnemonicParsing="false" onAction="#backAction" text="Назад" />
