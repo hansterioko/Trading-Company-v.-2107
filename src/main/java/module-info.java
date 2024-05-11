@@ -4,6 +4,7 @@ module rus.warehouse.trading_company {
     requires okhttp3;
     requires com.google.gson;
     requires static lombok;
+    requires javafx.swing;
 
     opens rus.warehouse.trading_company.models to javafx.base, javafx.graphics, javafx.fxml, com.google.gson; // Начали выводиться данные в TableView
     opens rus.warehouse.trading_company to javafx.fxml, com.google.gson, javafx.base, javafx.graphics;

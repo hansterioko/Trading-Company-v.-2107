@@ -8,52 +8,36 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import rus.warehouse.trading_company.RunApplication;
-import rus.warehouse.trading_company.adapters.LocalDateTimeTypeAdapter;
-import rus.warehouse.trading_company.models.Purchase;
-import rus.warehouse.trading_company.modelsDTO.PagedDataDTO;
-
+import rus.warehouse.trading_company.models.Company;
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 
-public class PurchaseRepositories {
 
+public class CompanyRepository {
     private static final String BASE_URL = "http://" + RunApplication.ip_address + ":8080";
-    public static PagedDataDTO getAll(Number pageIndex, LocalDate startDate, LocalDate endDate){
-        String from = "";
-        String to = "";
-        if (!Objects.isNull(startDate)) {
-            from = startDate.atTime(00, 00, 00).toString();
-            System.out.println(from);
-        }
-        if (!Objects.isNull(endDate)){
-            to = endDate.atTime(23, 59, 59).toString();
-            System.out.println(from);
-        }
+    public static List<Company> getAll(){
+
         Request request = new Request.Builder()
-                .url(BASE_URL + "/purchases?page=" + pageIndex + "&from=" + from + "&to=" + to)
+                .url(BASE_URL + "/companies")
                 .build();
 
         OkHttpClient client = new OkHttpClient();
         Call call = client.newCall(request);
-        System.out.println(request.body());
+        System.out.println(request.body() + " COMPANY REP");
         Gson gson = new GsonBuilder()
                 .excludeFieldsWithoutExposeAnnotation()
-                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeTypeAdapter())
                 .create();
         try {
             Response response = call.execute();
-            Type typeOfT = new TypeToken<PagedDataDTO<Purchase>>(){}.getType();
+            Type typeOfT = new TypeToken<List<Company>>(){}.getType();
 
             String dataJson = response.body().string();
 
             System.out.println(dataJson);
 
             if (response.isSuccessful()){
-               return gson.fromJson(dataJson, typeOfT);
+                return gson.fromJson(dataJson, typeOfT);
             }
             else{
                 return null;

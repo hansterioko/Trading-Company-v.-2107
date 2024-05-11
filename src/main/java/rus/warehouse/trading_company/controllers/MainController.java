@@ -25,7 +25,7 @@ public class MainController {
     }
 
     public void purchClick(MouseEvent mouseEvent) throws IOException {
-        //try {
+        try {
             Stage stage = new Stage();
             FXMLLoader fxmlLoader = new FXMLLoader(RunApplication.class.getResource("purchase-view.fxml"));
             Scene scene = new Scene(fxmlLoader.load());
@@ -38,8 +38,8 @@ public class MainController {
 
             Stage stageOld = (Stage) warehousePanel.getScene().getWindow();
             stageOld.close();
-//        } catch (IOException e) {
-//            System.out.println(LocalTime.now() + "   Ошибка открытия окна закупок!");
-//        }
+        } catch (IOException e) {
+            System.out.println(LocalTime.now() + "   Ошибка открытия окна закупок!");
+        }
     }
 }

@@ -2,11 +2,9 @@ package rus.warehouse.trading_company.models;
 
 import com.google.gson.annotations.Expose;
 import javafx.scene.control.Button;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-
 import java.time.LocalDateTime;
-import java.util.List;
+
 
 @Data
 public class Purchase {
@@ -28,4 +26,5 @@ public class Purchase {
         this.company = company;
         this.button = new Button("Подробнее");
     }
+
 }
