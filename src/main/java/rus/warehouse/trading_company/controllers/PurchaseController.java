@@ -18,6 +18,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import rus.warehouse.trading_company.RunApplication;
+import rus.warehouse.trading_company.models.Company;
 import rus.warehouse.trading_company.models.Purchase;
 import rus.warehouse.trading_company.modelsDTO.PagedDataDTO;
 import rus.warehouse.trading_company.repositories.PurchaseRepositories;
@@ -29,6 +30,7 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -39,6 +41,7 @@ public class PurchaseController implements Initializable {
     public DatePicker startDatePicker;
     public DatePicker endDatePicker;
     public Button providerBtn;
+    public Button filterBtn;
     @FXML
     private Button backBtn;
 
@@ -60,7 +63,13 @@ public class PurchaseController implements Initializable {
     @FXML
     private TableView<Purchase> purchaseTable;
 
-    private Integer currentPageIndex = 0;
+    private String listProviders = "";
+
+    // Для getPurchase()
+    private Number currentIndex = 0;
+    private LocalDate startDate = null;
+    private LocalDate endDate = null;
+    private String sortFilterDate = "DESC";
 
     @FXML
     void backAction(ActionEvent event) {
@@ -71,6 +80,7 @@ public class PurchaseController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         searchBtn.graphicProperty().setValue(new ImageView(RunApplication.class.getResource("images/searchBtn.png").toExternalForm()));
         providerBtn.graphicProperty().setValue(new ImageView(RunApplication.class.getResource("images/providerBtn.png").toExternalForm()));
+        filterBtn.graphicProperty().setValue(new ImageView(RunApplication.class.getResource("images/arrowDown.png").toExternalForm()));
 
         companyColumn.setCellValueFactory(new PropertyValueFactory<Purchase, String>("company"));
         costColumn.setCellValueFactory(new PropertyValueFactory<Purchase, Integer>("price"));
@@ -78,15 +88,18 @@ public class PurchaseController implements Initializable {
         idColumn.setCellValueFactory(new PropertyValueFactory<Purchase, Integer>("id"));
         moreColumn.setCellValueFactory(new PropertyValueFactory<Purchase, Button>("button"));
 
-        getPurchase(0, null, null);
+        getPurchase();
         purchasePagination.currentPageIndexProperty().addListener((obs, oldIndex, newIndex) -> {changePage(oldIndex, newIndex);});
     }
 
+    public void setListProviders(String listProviders) {
+        this.listProviders = listProviders;
+    }
+
     // Получает список закупок из репозитория и приводит их из ДТО в норм модель
-    private void getPurchase(Number newIndex, LocalDate startDate, LocalDate endDate){
+    private void getPurchase(){
         ObservableList<Purchase> data = FXCollections.observableArrayList();
-        System.out.println(currentPageIndex);
-        PagedDataDTO<Purchase> pagedDataDTO = PurchaseRepositories.getAll(newIndex, startDate, endDate);
+        PagedDataDTO<Purchase> pagedDataDTO = PurchaseRepositories.getAll(currentIndex, startDate, endDate, listProviders, sortFilterDate);
         List<Purchase> purchaseList = pagedDataDTO.getData();
 
         if (pagedDataDTO.getTotal() == 0){
@@ -117,27 +130,37 @@ public class PurchaseController implements Initializable {
     private void changePage(Number oldIndex, Number newIndex){
         System.out.println(newIndex);
         if (oldIndex != newIndex){
-            getPurchase(newIndex, startDatePicker.getValue(), endDatePicker.getValue());
+            currentIndex = newIndex;
+            getPurchase();
         }
     }
 
     public void searchByDateClick(MouseEvent mouseEvent) {
-        getPurchase(0, startDatePicker.getValue(), endDatePicker.getValue());
+        currentIndex = 0;
+        startDate = startDatePicker.getValue();
+        endDate = endDatePicker.getValue();
         purchasePagination.setCurrentPageIndex(0);
+
+        getPurchase();
     }
 
     public void dropDateClick(MouseEvent mouseEvent) {
         startDatePicker.setValue(null);
         endDatePicker.setValue(null);
-        getPurchase(0, startDatePicker.getValue(), endDatePicker.getValue());
+        currentIndex = 0;
+        listProviders = ""; // Очищаем выбранных поставщиков
         purchasePagination.setCurrentPageIndex(0);
+
+        getPurchase();
     }
 
     public void chooseProviderClick(MouseEvent mouseEvent) throws IOException {
-        //try {
+        try {
             Stage stage = new Stage();
             FXMLLoader fxmlLoader = new FXMLLoader(RunApplication.class.getResource("selectCompany-view.fxml"));
             stage.initModality(Modality.APPLICATION_MODAL);
+            SelectCompanyController selectCompanyController = new SelectCompanyController(this);
+            fxmlLoader.setController(selectCompanyController);
             Scene scene = new Scene(fxmlLoader.load());
 //            String CHTO = this.getClass().getResource("purchase-view.fxml").toString();
 //            System.out.println(CHTO);
@@ -147,9 +170,26 @@ public class PurchaseController implements Initializable {
             stage.setScene(scene);
             stage.showAndWait();
 
+            getPurchase();
+            //System.out.println(listProviders + "КОНТРОЛЛЕР ПУРЧ");
 
-//        } catch (IOException e) {
-//            System.out.println(LocalTime.now() + "   Ошибка открытия окна выбора поставщика!");
-//        }
+        } catch (IOException e) {
+            System.out.println(LocalTime.now() + "   Ошибка открытия окна выбора поставщика!");
+        }
+    }
+
+    public void filterClick(MouseEvent mouseEvent) {
+        if (filterBtn.getText().equals("По убыванию")){
+            filterBtn.setText("По возрастанию");
+            filterBtn.graphicProperty().setValue(new ImageView(RunApplication.class.getResource("images/arrowUp.png").toExternalForm()));
+            sortFilterDate = "ASC";
+        }
+        else{
+            filterBtn.setText("По убыванию");
+            filterBtn.graphicProperty().setValue(new ImageView(RunApplication.class.getResource("images/arrowDown.png").toExternalForm()));
+            sortFilterDate = "DESC";
+        }
+
+        getPurchase();
     }
 }

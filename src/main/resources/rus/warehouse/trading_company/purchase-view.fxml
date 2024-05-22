@@ -42,5 +42,6 @@
       <Button fx:id="searchBtn" layoutX="518.0" layoutY="52.0" mnemonicParsing="false" onMouseClicked="#searchByDateClick" prefHeight="26.0" prefWidth="78.0" text="Поиск" />
       <Button layoutX="616.0" layoutY="52.0" mnemonicParsing="false" onMouseClicked="#dropDateClick" prefHeight="26.0" prefWidth="66.0" text="Сброс" />
       <Button fx:id="providerBtn" layoutX="517.0" layoutY="14.0" mnemonicParsing="false" onMouseClicked="#chooseProviderClick" prefHeight="26.0" prefWidth="166.0" text="Выбрать поставщика" />
+      <Button fx:id="filterBtn" layoutX="141.0" layoutY="14.0" mnemonicParsing="false" onMouseClicked="#filterClick" prefHeight="26.0" prefWidth="166.0" text="По убыванию" />
    </children>
 </AnchorPane>

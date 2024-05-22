@@ -4,12 +4,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 import rus.warehouse.trading_company.models.Company;
 import rus.warehouse.trading_company.models.Purchase;
 import rus.warehouse.trading_company.repositories.CompanyRepository;
@@ -45,15 +43,45 @@ public class SelectCompanyController implements Initializable {
     @FXML
     private TableColumn<Company, String> streetColumn;
 
+    private String listIdCompany = "";
+
+    private PurchaseController purchaseController;
+
+    public SelectCompanyController(PurchaseController purchaseController) {
+        this.purchaseController = purchaseController;
+    }
+
     ObservableList<Company> observableList = FXCollections.observableArrayList();
 
     public void okClick(MouseEvent mouseEvent) {
-        System.out.println(observableList);
+        boolean flag = false;
+//        System.out.println(observableList);
         for (Company company:
              observableList) {
-            if(company.getCheckbox().isSelected())
-            System.out.println(company);
+            if(company.getCheckbox().isSelected()){
+                flag = true;
+                listIdCompany += "," + company.getId();
+            }
         }
+        if (flag){
+            listIdCompany = listIdCompany.substring(1);
+        }
+        if (!flag){
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Ни одна из компаний не выбрана!", new ButtonType("Отмена"), ButtonType.OK);
+            alert.setTitle("Ошибка фильтра");
+            alert.setHeaderText("Закрыть окно фильтра?");
+
+            alert.showAndWait();
+            if (alert.getResult() == ButtonType.OK){
+                Stage stageOld = (Stage) okBtn.getScene().getWindow();
+                stageOld.close();
+            }
+        }
+        //System.out.println(listIdCompany + "В СЕЛЕКТ");
+        purchaseController.setListProviders(listIdCompany);
+        Stage stageOld = (Stage) okBtn.getScene().getWindow();
+        stageOld.close();
+//        System.out.println(listIdCompany);
     }
 
     @Override

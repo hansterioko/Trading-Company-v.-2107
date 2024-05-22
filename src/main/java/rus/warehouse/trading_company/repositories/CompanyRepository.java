@@ -24,7 +24,7 @@ public class CompanyRepository {
 
         OkHttpClient client = new OkHttpClient();
         Call call = client.newCall(request);
-        System.out.println(request.body() + " COMPANY REP");
+        //System.out.println(request.body() + " COMPANY REP");
         Gson gson = new GsonBuilder()
                 .excludeFieldsWithoutExposeAnnotation()
                 .create();
@@ -34,7 +34,7 @@ public class CompanyRepository {
 
             String dataJson = response.body().string();
 
-            System.out.println(dataJson);
+            //System.out.println(dataJson);
 
             if (response.isSuccessful()){
                 return gson.fromJson(dataJson, typeOfT);

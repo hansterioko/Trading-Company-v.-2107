@@ -19,7 +19,7 @@ public class Company {
     private String house;
     @Expose
     private String phone;
-
+    @Expose(serialize = false, deserialize = false)
     private CheckBox checkbox;
 
     public Company(Integer id, String name, String city, String street, String house, String phone) {
