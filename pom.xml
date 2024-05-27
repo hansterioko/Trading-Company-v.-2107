@@ -68,6 +68,11 @@
             <version>22.0.1</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.jfxtras</groupId>
+            <artifactId>jfxtras-agenda</artifactId>
+            <version>17-r1</version>
+        </dependency>
 
     </dependencies>
 

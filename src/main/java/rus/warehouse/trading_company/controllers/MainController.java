@@ -1,10 +1,9 @@
 package rus.warehouse.trading_company.controllers;
 
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
@@ -25,7 +24,7 @@ public class MainController {
     }
 
     public void purchClick(MouseEvent mouseEvent) throws IOException {
-        //try {
+        try {
             Stage stage = new Stage();
             FXMLLoader fxmlLoader = new FXMLLoader(RunApplication.class.getResource("purchase-view.fxml"));
             Scene scene = new Scene(fxmlLoader.load());
@@ -38,8 +37,12 @@ public class MainController {
 
             Stage stageOld = (Stage) warehousePanel.getScene().getWindow();
             stageOld.close();
-//        } catch (IOException e) {
-//            System.out.println(LocalTime.now() + "   Ошибка открытия окна закупок!");
-//        }
+        } catch (IOException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Не удалось открыть окно закупок", ButtonType.OK);
+            alert.setTitle("Ошибка подключения");
+            alert.setHeaderText("Проверьте подключение к интернету!");
+            alert.show();
+            System.out.println(LocalTime.now() + "   Ошибка открытия окна закупок! " + e.toString());
+        }
     }
 }

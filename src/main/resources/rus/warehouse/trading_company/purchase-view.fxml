@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
@@ -7,41 +8,108 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="rus.warehouse.trading_company.controllers.PurchaseController">
+<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="rus.warehouse.trading_company.controllers.PurchaseController">
    <children>
-      <TableView fx:id="purchaseTable" layoutX="14.0" layoutY="84.0" prefHeight="447.0" prefWidth="722.0" style="-fx-fixed-cell-size: 30;">
-        <columns>
-          <TableColumn fx:id="dateColumn" editable="false" prefWidth="167.20000648498535" resizable="false" text="Дата" />
-          <TableColumn fx:id="companyColumn" editable="false" prefWidth="245.0" resizable="false" text="Поставщик" />
-            <TableColumn fx:id="idColumn" prefWidth="0.0" text="id" visible="false" />
-            <TableColumn fx:id="costColumn" editable="false" prefWidth="186.40005493164062" resizable="false" text="Стоимость" />
-            <TableColumn fx:id="moreColumn" editable="false" minWidth="0.79998779296875" prefWidth="100.0" text=" " />
-        </columns>
-      </TableView>
-      <Button fx:id="backBtn" layoutX="834.0" layoutY="561.0" mnemonicParsing="false" onAction="#backAction" text="Назад" />
-      <Pagination fx:id="purchasePagination" layoutX="287.0" layoutY="530.0" onMouseClicked="#clickToPaginationPanel" onMouseEntered="#clickToPaginationPanel" pageCount="256788" prefHeight="44.0" />
-      <DatePicker fx:id="startDatePicker" layoutX="76.0" layoutY="52.0" />
-      <DatePicker fx:id="endDatePicker" layoutX="332.0" layoutY="52.0" />
-      <Label layoutX="13.0" layoutY="14.0" text="Поиск по дате:">
-         <font>
-            <Font size="16.0" />
-         </font>
-      </Label>
-      <Label layoutX="16.0" layoutY="55.0" text="Начало:">
-         <font>
-            <Font size="14.0" />
-         </font>
-      </Label>
-      <Label layoutX="277.0" layoutY="55.0" text="Конец:">
-         <font>
-            <Font size="14.0" />
-         </font>
-      </Label>
-      <Button fx:id="searchBtn" layoutX="518.0" layoutY="52.0" mnemonicParsing="false" onMouseClicked="#searchByDateClick" prefHeight="26.0" prefWidth="78.0" text="Поиск" />
-      <Button layoutX="616.0" layoutY="52.0" mnemonicParsing="false" onMouseClicked="#dropDateClick" prefHeight="26.0" prefWidth="66.0" text="Сброс" />
-      <Button fx:id="providerBtn" layoutX="517.0" layoutY="14.0" mnemonicParsing="false" onMouseClicked="#chooseProviderClick" prefHeight="26.0" prefWidth="166.0" text="Выбрать поставщика" />
-      <Button fx:id="filterBtn" layoutX="141.0" layoutY="14.0" mnemonicParsing="false" onMouseClicked="#filterClick" prefHeight="26.0" prefWidth="166.0" text="По убыванию" />
+      <GridPane layoutY="37.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="0.0" prefHeight="600.0" prefWidth="900.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="722.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="60.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="447.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <TableView fx:id="purchaseTable" maxHeight="447.0" onMouseClicked="#clickOnTable" prefHeight="447.0" prefWidth="762.0" style="-fx-fixed-cell-size: 30;" GridPane.rowIndex="1" GridPane.valignment="BOTTOM">
+              <columns>
+                <TableColumn fx:id="dateColumn" editable="false" prefWidth="167.20000648498535" text="Дата" />
+                <TableColumn fx:id="companyColumn" editable="false" prefWidth="320.0" text="Поставщик" />
+                  <TableColumn fx:id="idColumn" prefWidth="0.0" text="id" visible="false" />
+                  <TableColumn fx:id="costColumn" editable="false" prefWidth="267.2000427246094" text="Стоимость" />
+              </columns>
+            </TableView>
+
+            <Label fx:id="countRowsLabel" alignment="CENTER_RIGHT" prefHeight="26.0" prefWidth="246.0" text="Всего записей: " textAlignment="RIGHT" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
+            <Pagination fx:id="purchasePagination" onMouseClicked="#clickToPaginationPanel" onMouseEntered="#clickToPaginationPanel" pageCount="256788" prefHeight="44.0" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
+            <Button fx:id="backBtn" mnemonicParsing="false" onAction="#backAction" text="Назад" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+               <GridPane.margin>
+                  <Insets />
+               </GridPane.margin>
+            </Button>
+            <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#addNewPurchaseBtn" prefHeight="70.0" prefWidth="130.0" text="Добавление закупки" textAlignment="CENTER" textFill="#3a44ba" wrapText="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+             <Label text="Поиск по дате:" GridPane.valignment="TOP">
+                 <font>
+                     <Font size="16.0" />
+                 </font>
+               <padding>
+                  <Insets left="10.0" top="10.0" />
+               </padding>
+             </Label>
+             <Label text="Начало:" GridPane.halignment="LEFT" GridPane.valignment="BOTTOM">
+                 <font>
+                     <Font size="14.0" />
+                 </font>
+               <GridPane.margin>
+                  <Insets bottom="5.0" left="10.0" />
+               </GridPane.margin>
+             </Label>
+             <Button fx:id="filterBtn" mnemonicParsing="false" onMouseClicked="#filterClick" prefHeight="26.0" prefWidth="166.0" text="По убыванию" GridPane.halignment="LEFT" GridPane.valignment="TOP">
+               <GridPane.margin>
+                  <Insets left="125.0" top="10.0" />
+               </GridPane.margin>
+            </Button>
+             <Label text="Конец:" GridPane.halignment="LEFT" GridPane.valignment="BOTTOM">
+                 <font>
+                     <Font size="14.0" />
+                 </font>
+               <GridPane.margin>
+                  <Insets bottom="5.0" left="280.0" />
+               </GridPane.margin>
+             </Label>
+             <DatePicker fx:id="startDatePicker" GridPane.halignment="LEFT" GridPane.valignment="BOTTOM">
+               <GridPane.margin>
+                  <Insets bottom="2.0" left="65.0" />
+               </GridPane.margin>
+            </DatePicker>
+             <DatePicker fx:id="endDatePicker" GridPane.halignment="LEFT" GridPane.valignment="BOTTOM">
+               <GridPane.margin>
+                  <Insets bottom="2.0" left="327.0" />
+               </GridPane.margin>
+            </DatePicker>
+             <Button fx:id="searchBtn" mnemonicParsing="false" onMouseClicked="#searchByDateClick" prefHeight="26.0" prefWidth="78.0" text="Поиск" GridPane.halignment="RIGHT" GridPane.valignment="BOTTOM">
+               <GridPane.margin>
+                  <Insets bottom="2.0" right="165.0" />
+               </GridPane.margin>
+            </Button>
+             <Button mnemonicParsing="false" onMouseClicked="#dropDateClick" prefHeight="26.0" prefWidth="66.0" text="Сброс" GridPane.halignment="RIGHT" GridPane.valignment="BOTTOM">
+               <GridPane.margin>
+                  <Insets bottom="2.0" right="80.0" />
+               </GridPane.margin>
+            </Button>
+             <Button fx:id="providerBtn" mnemonicParsing="false" onMouseClicked="#chooseProviderClick" prefHeight="26.0" prefWidth="166.0" text="Выбрать поставщика" GridPane.halignment="RIGHT" GridPane.valignment="TOP">
+               <GridPane.margin>
+                  <Insets right="80.0" top="10.0" />
+               </GridPane.margin>
+            </Button>
+            <Button fx:id="detailPurchaseBtn" disable="true" mnemonicParsing="false" onAction="#detailPurchaseAction" text="Подробнее о закупке" textAlignment="CENTER" textFill="#a46500" wrapText="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
+               <font>
+                  <Font size="14.0" />
+               </font>
+               <GridPane.margin>
+                  <Insets left="3.0" right="3.0" top="5.0" />
+               </GridPane.margin>
+            </Button>
+         </children>
+      </GridPane>
    </children>
 </AnchorPane>

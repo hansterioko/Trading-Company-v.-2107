@@ -1,7 +1,6 @@
 package rus.warehouse.trading_company.controllers;
 
 
-import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -11,28 +10,23 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import rus.warehouse.trading_company.RunApplication;
-import rus.warehouse.trading_company.models.Company;
 import rus.warehouse.trading_company.models.Purchase;
 import rus.warehouse.trading_company.modelsDTO.PagedDataDTO;
 import rus.warehouse.trading_company.repositories.PurchaseRepositories;
 
-import javax.swing.*;
-import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class PurchaseController implements Initializable {
@@ -42,8 +36,11 @@ public class PurchaseController implements Initializable {
     public DatePicker endDatePicker;
     public Button providerBtn;
     public Button filterBtn;
+    public Label countRowsLabel;
     @FXML
     private Button backBtn;
+    @FXML
+    private Button detailPurchaseBtn;
 
     @FXML
     private TableColumn<Purchase, String> companyColumn;
@@ -52,7 +49,7 @@ public class PurchaseController implements Initializable {
     private TableColumn<Purchase, Integer> costColumn;
 
     @FXML
-    private TableColumn<Purchase, LocalDateTime> dateColumn;
+    private TableColumn<Purchase, String> dateColumn;
 
     @FXML
     private TableColumn<Purchase, Integer> idColumn;
@@ -71,9 +68,29 @@ public class PurchaseController implements Initializable {
     private LocalDate endDate = null;
     private String sortFilterDate = "DESC";
 
+    // Для кнопки деталей о закупке
+    private boolean isSelectRow = false;
+
     @FXML
     void backAction(ActionEvent event) {
+        try {
+            Stage stage = new Stage();
+            FXMLLoader fxmlLoader = new FXMLLoader(RunApplication.class.getResource("main-view.fxml"));
+            Scene scene = new Scene(fxmlLoader.load());
+            scene.getStylesheets().add(RunApplication.class.getResource("css/main.css").toExternalForm());
+            stage.setTitle("Управление складом");
+            stage.setScene(scene);
+            stage.show();
 
+            Stage stageOld = (Stage) backBtn.getScene().getWindow();
+            stageOld.close();
+        } catch (IOException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Не удалось открыть окно главного меню", ButtonType.OK);
+            alert.setTitle("Ошибка подключения");
+            alert.setHeaderText("Проверьте подключение к интернету!");
+            alert.show();
+            System.out.println(LocalTime.now() + "   Ошибка открытия главного окна! " + e.toString());
+        }
     }
 
     @Override
@@ -84,11 +101,11 @@ public class PurchaseController implements Initializable {
 
         companyColumn.setCellValueFactory(new PropertyValueFactory<Purchase, String>("company"));
         costColumn.setCellValueFactory(new PropertyValueFactory<Purchase, Integer>("price"));
-        dateColumn.setCellValueFactory(new PropertyValueFactory<Purchase, LocalDateTime>("date"));
+        dateColumn.setCellValueFactory(new PropertyValueFactory<Purchase, String>("date"));
         idColumn.setCellValueFactory(new PropertyValueFactory<Purchase, Integer>("id"));
-        moreColumn.setCellValueFactory(new PropertyValueFactory<Purchase, Button>("button"));
 
         getPurchase();
+        //moreColumn.cellFactoryProperty().get().call()
         purchasePagination.currentPageIndexProperty().addListener((obs, oldIndex, newIndex) -> {changePage(oldIndex, newIndex);});
     }
 
@@ -101,6 +118,7 @@ public class PurchaseController implements Initializable {
         ObservableList<Purchase> data = FXCollections.observableArrayList();
         PagedDataDTO<Purchase> pagedDataDTO = PurchaseRepositories.getAll(currentIndex, startDate, endDate, listProviders, sortFilterDate);
         List<Purchase> purchaseList = pagedDataDTO.getData();
+        countRowsLabel.setText("Всего записей: " + pagedDataDTO.getTotal());
 
         if (pagedDataDTO.getTotal() == 0){
             purchasePagination.setPageCount(1);
@@ -114,6 +132,7 @@ public class PurchaseController implements Initializable {
             data.add(new Purchase(purchase.getId(), purchase.getDate(), purchase.getPrice(), purchase.getCompany()));
         }
 
+        detailPurchaseBtn.setDisable(true);
         purchaseTable.setItems(data);
     }
 
@@ -147,6 +166,8 @@ public class PurchaseController implements Initializable {
     public void dropDateClick(MouseEvent mouseEvent) {
         startDatePicker.setValue(null);
         endDatePicker.setValue(null);
+        startDate = null;
+        endDate = null;
         currentIndex = 0;
         listProviders = ""; // Очищаем выбранных поставщиков
         purchasePagination.setCurrentPageIndex(0);
@@ -162,11 +183,7 @@ public class PurchaseController implements Initializable {
             SelectCompanyController selectCompanyController = new SelectCompanyController(this);
             fxmlLoader.setController(selectCompanyController);
             Scene scene = new Scene(fxmlLoader.load());
-//            String CHTO = this.getClass().getResource("purchase-view.fxml").toString();
-//            System.out.println(CHTO);
-            //scene.getStylesheets().add(RunApplication.class.getResource("css/purchase.css").toExternalForm());
             stage.setTitle("Выбор поставщиков");
-            //stage.getIcons().add(new Image(RunApplication.class.getResource("images/providerBtn.png").toString()));
             stage.setScene(scene);
             stage.showAndWait();
 
@@ -174,6 +191,10 @@ public class PurchaseController implements Initializable {
             //System.out.println(listProviders + "КОНТРОЛЛЕР ПУРЧ");
 
         } catch (IOException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Не удалось открыть окно выбора поставщиков", ButtonType.OK);
+            alert.setTitle("Ошибка подключения");
+            alert.setHeaderText("Проверьте подключение к интернету!");
+            alert.show();
             System.out.println(LocalTime.now() + "   Ошибка открытия окна выбора поставщика!");
         }
     }
@@ -191,5 +212,37 @@ public class PurchaseController implements Initializable {
         }
 
         getPurchase();
+    }
+
+    public void addNewPurchaseBtn(ActionEvent actionEvent) {
+        try {
+            Stage stage = new Stage();
+            FXMLLoader fxmlLoader = new FXMLLoader(RunApplication.class.getResource("add-purchase-view.fxml"));
+            Scene scene = new Scene(fxmlLoader.load());
+            stage.setTitle("Добавление закупки");
+            stage.setScene(scene);
+            stage.show();
+
+            Stage stageOld = (Stage) backBtn.getScene().getWindow();
+            stageOld.close();
+        } catch (IOException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Не удалось открыть окно добавления закупок", ButtonType.OK);
+            alert.setTitle("Ошибка подключения");
+            alert.setHeaderText("Проверьте подключение к интернету!");
+            alert.show();
+            System.out.println(LocalTime.now() + "   Ошибка открытия окна добавления закупок! " + e.toString());
+        }
+    }
+
+    public void detailPurchaseAction(ActionEvent actionEvent) {
+        //System.out.println(purchaseTable.getSelectionModel().getSelectedItem());
+        purchaseTable.getSelectionModel().clearSelection();
+        detailPurchaseBtn.setDisable(true);
+    }
+
+    public void clickOnTable(MouseEvent mouseEvent) {
+        if (!Objects.isNull(purchaseTable.getSelectionModel().getSelectedItem())){
+            detailPurchaseBtn.setDisable(false);
+        }
     }
 }

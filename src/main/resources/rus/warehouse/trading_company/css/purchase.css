@@ -11,3 +11,7 @@
 .table-view: focused{
  -fx-background-color: transparent;
 }
+
+.table-row-cell:selected{
+    -fx-background-color: red;
+}
