@@ -59,7 +59,7 @@ public class SelectPurchaseCompanyController implements Initializable {
 
     public void okClick(MouseEvent mouseEvent) {
         if (!Objects.isNull(chooseCompanyTable.getSelectionModel().getSelectedItem())){
-            addPurchaseController.setIdCompany(chooseCompanyTable.getSelectionModel().getSelectedItem().getId().toString());
+            addPurchaseController.setIdCompany(Integer.valueOf(chooseCompanyTable.getSelectionModel().getSelectedItem().getId()));
             Stage stageOld = (Stage) okBtn.getScene().getWindow();
             stageOld.close();
         }
