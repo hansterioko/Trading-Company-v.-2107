@@ -95,6 +95,14 @@ public class AddProductController implements Initializable {
     // Для типа контроллера
     private String typeController;
 
+
+    private void manufactureDateIsAfter(){
+        Alert alert = new Alert(Alert.AlertType.ERROR, "Дата выпуска не может быть позднее конца срока годности!", ButtonType.OK);
+        alert.setTitle("Добавление товара");
+        alert.setHeaderText("Ошибка в датах!");
+        alert.show();
+    }
+
     @FXML
     void addProduct(ActionEvent event) {
         //System.out.println(measureCBox.getValue());
@@ -102,64 +110,110 @@ public class AddProductController implements Initializable {
             Double costD = Double.valueOf(priceSpinner.getValue()) + (Double.valueOf(priceKopeckSpinner.getValue()) * 0.01);
             BigDecimal cost = new BigDecimal(costD.toString());
 
-            if(manufactureDatePicker.getLocalDateTime() != null)
-                if (typeExpirationCBox.getSelectionModel().getSelectedItem().equals(ValueOfVisibleExpiration.NOTHING)){
-                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Срок годности не указан", new ButtonType("Да", ButtonBar.ButtonData.APPLY), new ButtonType("Нет"));
+            if(manufactureDatePicker.getLocalDateTime() != null) {
+                if (manufactureDatePicker.getLocalDateTime().isAfter(LocalDateTime.now())){
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "Дата выпуска не может быть позднее текущей даты!", ButtonType.OK);
+                    alert.setTitle("Добавление товара");
+                    alert.setHeaderText("Ошибка в дате выпуска!");
+                    alert.show();
+                    return;
+                }
+                if (typeExpirationCBox.getSelectionModel().getSelectedItem().equals(ValueOfVisibleExpiration.NOTHING)) {
+                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Срок годности не указан");
                     alert.setTitle("Срок годности");
                     alert.setHeaderText("Продолжить без указания срока годности?");
+                    ButtonType yesTypeBtn = new ButtonType("Да");
+                    ButtonType noTypeBtn = new ButtonType("Нет");
+                    alert.getButtonTypes().clear();
+                    alert.getButtonTypes().addAll(yesTypeBtn, noTypeBtn);
                     alert.showAndWait();
 
-                    if (alert.getResult() == ButtonType.APPLY){
+                    if (alert.getResult() == yesTypeBtn) {
                         // добавление без срока годности
+                        System.out.println("Ведь нет");
                         addPurchaseController.addNewProduct(typeController, new PurchaseProduct(nameField.getText(), vatSpinner.getValue(), categoryField.getText(), summaryField.getText(), unitField.getText(), cost, manufactureDatePicker.getLocalDateTime(), countSpinner.getValue(), typePackagingField.getText()));
                         Stage stageOld = (Stage) backBtn.getScene().getWindow();
                         stageOld.close();
                     }
                 } else if (typeExpirationCBox.getSelectionModel().getSelectedItem().equals(ValueOfVisibleExpiration.DIGITAL)) {
-                    if (dateHoldSpinner.getValue() != 0){
+                    if (dateHoldSpinner.getValue() != 0) {
                         // добавляем со спинеров числом
                         LocalDateTime endDateExpiration = manufactureDatePicker.getLocalDateTime();
 
-                        switch (measureCBox.getValue()){
+                        switch (measureCBox.getValue()) {
                             case ValueOfExpiration.DAY:
-                                endDateExpiration.plusDays(dateHoldSpinner.getValue());
+                                endDateExpiration = endDateExpiration.plusDays(dateHoldSpinner.getValue());
                                 break;
                             case ValueOfExpiration.HOUR:
-                                endDateExpiration.plusHours(dateHoldSpinner.getValue());
+                                endDateExpiration = endDateExpiration.plusHours(dateHoldSpinner.getValue());
                                 break;
                             case ValueOfExpiration.WEEK:
-                                endDateExpiration.plusWeeks(dateHoldSpinner.getValue());
+                                endDateExpiration = endDateExpiration.plusWeeks(dateHoldSpinner.getValue());
                                 break;
                             case ValueOfExpiration.YEAR:
-                                endDateExpiration.plusYears(dateHoldSpinner.getValue());
+                                endDateExpiration = endDateExpiration.plusYears(dateHoldSpinner.getValue());
                                 break;
                         }
 
-                        addPurchaseController.addNewProduct(typeController, new PurchaseProduct(nameField.getText(), vatSpinner.getValue(), categoryField.getText(), summaryField.getText(), unitField.getText(), cost, manufactureDatePicker.getLocalDateTime(), endDateExpiration, countSpinner.getValue(), typePackagingField.getText()));
-                        Stage stageOld = (Stage) backBtn.getScene().getWindow();
-                        stageOld.close();
-                    }
-                    else {
+                        if (endDateExpiration.isBefore(LocalDateTime.now()) || endDateExpiration.equals(LocalDateTime.now())) {
+                            Alert alert = new Alert(Alert.AlertType.WARNING, "У товара истёк срок годности!\nУбедитесь в правильности введённых вами дат!");
+                            alert.setTitle("Добавление товара");
+                            alert.setHeaderText("Всё равно создать?");
+                            ButtonType yesTypeBtn = new ButtonType("Да");
+                            ButtonType noTypeBtn = new ButtonType("Нет");
+                            alert.getButtonTypes().clear();
+                            alert.getButtonTypes().addAll(yesTypeBtn, noTypeBtn);
+                            alert.showAndWait();
+                            if (alert.getResult() == yesTypeBtn) {
+                                addPurchaseController.addNewProduct(typeController, new PurchaseProduct(nameField.getText(), vatSpinner.getValue(), categoryField.getText(), summaryField.getText(), unitField.getText(), cost, manufactureDatePicker.getLocalDateTime(), endDateExpiration, countSpinner.getValue(), typePackagingField.getText()));
+                                Stage stageOld = (Stage) backBtn.getScene().getWindow();
+                                stageOld.close();
+                            }
+                        } else {
+                            addPurchaseController.addNewProduct(typeController, new PurchaseProduct(nameField.getText(), vatSpinner.getValue(), categoryField.getText(), summaryField.getText(), unitField.getText(), cost, manufactureDatePicker.getLocalDateTime(), endDateExpiration, countSpinner.getValue(), typePackagingField.getText()));
+                            Stage stageOld = (Stage) backBtn.getScene().getWindow();
+                            stageOld.close();
+                        }
+                    } else {
                         Alert alert = new Alert(Alert.AlertType.ERROR, "Не все поля заполнены!", ButtonType.OK);
                         alert.setTitle("Ошибка добавления");
                         alert.setHeaderText("Укажите срок годности!");
                         alert.show();
                     }
-                }
-                else {
-                    if (dateExpirateField.getLocalDateTime() != null){
+                } else {
+                    if (dateExpirateField.getLocalDateTime() != null) {
                         // добавляем со конечной датой
-                        addPurchaseController.addNewProduct(typeController, new PurchaseProduct(nameField.getText(), vatSpinner.getValue(), categoryField.getText(), summaryField.getText(), unitField.getText(), cost, manufactureDatePicker.getLocalDateTime(), dateExpirateField.getLocalDateTime(), countSpinner.getValue(), typePackagingField.getText()));
-                        Stage stageOld = (Stage) backBtn.getScene().getWindow();
-                        stageOld.close();
-                    }
-                    else {
+                        if (manufactureDatePicker.getLocalDateTime().equals(dateExpirateField.getLocalDateTime()) || manufactureDatePicker.getLocalDateTime().isAfter(dateExpirateField.getLocalDateTime())) {
+                            manufactureDateIsAfter();
+                        } else {
+                            if (dateExpirateField.getLocalDateTime().isBefore(LocalDateTime.now()) || dateExpirateField.getLocalDateTime().equals(LocalDateTime.now())) {
+                                Alert alert = new Alert(Alert.AlertType.WARNING, "У товара истёк срок годности!\nУбедитесь в правильности введённых вами дат!");
+                                alert.setTitle("Добавление товара");
+                                alert.setHeaderText("Всё равно создать?");
+                                ButtonType yesTypeBtn = new ButtonType("Да");
+                                ButtonType noTypeBtn = new ButtonType("Нет");
+                                alert.getButtonTypes().clear();
+                                alert.getButtonTypes().addAll(yesTypeBtn, noTypeBtn);
+                                alert.showAndWait();
+                                if (alert.getResult() == yesTypeBtn) {
+                                    addPurchaseController.addNewProduct(typeController, new PurchaseProduct(nameField.getText(), vatSpinner.getValue(), categoryField.getText(), summaryField.getText(), unitField.getText(), cost, manufactureDatePicker.getLocalDateTime(), dateExpirateField.getLocalDateTime(), countSpinner.getValue(), typePackagingField.getText()));
+                                    Stage stageOld = (Stage) backBtn.getScene().getWindow();
+                                    stageOld.close();
+                                }
+                            } else {
+                                addPurchaseController.addNewProduct(typeController, new PurchaseProduct(nameField.getText(), vatSpinner.getValue(), categoryField.getText(), summaryField.getText(), unitField.getText(), cost, manufactureDatePicker.getLocalDateTime(), dateExpirateField.getLocalDateTime(), countSpinner.getValue(), typePackagingField.getText()));
+                                Stage stageOld = (Stage) backBtn.getScene().getWindow();
+                                stageOld.close();
+                            }
+                        }
+                    } else {
                         Alert alert = new Alert(Alert.AlertType.ERROR, "Не все поля заполнены!", ButtonType.OK);
                         alert.setTitle("Ошибка добавления");
                         alert.setHeaderText("Укажите срок годности!");
                         alert.show();
                     }
                 }
+            }
             else{
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Дата выпуска не указана");
                 ButtonType yesTypeBtn = new ButtonType("Да");
@@ -209,6 +263,15 @@ public class AddProductController implements Initializable {
         }
     }
 
+    public AddProductController(PurchaseProduct product) {
+        this.addPurchaseController = addPurchaseController;
+            //addProdBtn.setVisible(false);
+            typeController = "INFO";
+            Platform.runLater(()->addProdBtn.setVisible(false));
+            Platform.runLater(()->setField(product));
+            Platform.runLater(this::setFieldNoEdit);
+    }
+
     public AddProductController(AddPurchaseController addPurchaseController, String type, PurchaseProduct product) {
         this.addPurchaseController = addPurchaseController;
         typeController = type;
@@ -227,6 +290,9 @@ public class AddProductController implements Initializable {
     }
 
     private void setField(PurchaseProduct product){
+        typeExpirationCBox.setVisible(false);
+        measuringExpirationLabel.setVisible(false);
+
         nameField.setText(product.getName());
         priceSpinner.getValueFactory().setValue((int)Math.floor(product.getPrice().doubleValue()));
         priceKopeckSpinner.getValueFactory().setValue((int)Math.floor(product.getPrice().doubleValue() * 100) % 100);

@@ -6,8 +6,9 @@ import com.google.gson.reflect.TypeToken;
 import okhttp3.*;
 import rus.warehouse.trading_company.RunApplication;
 import rus.warehouse.trading_company.adapters.LocalDateTimeTypeAdapter;
-import rus.warehouse.trading_company.models.Company;
+import rus.warehouse.trading_company.models.Order;
 import rus.warehouse.trading_company.models.Purchase;
+import rus.warehouse.trading_company.modelsDTO.OrderDTO;
 import rus.warehouse.trading_company.modelsDTO.PagedDataDTO;
 import rus.warehouse.trading_company.modelsDTO.PurchaseDTO;
 
@@ -18,15 +19,16 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
-public class PurchaseRepositories {
+public class OrderRepository {
     private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
     private static final String BASE_URL = "http://" + RunApplication.ip_address + ":8080";
-    public static PagedDataDTO getAll(Number pageIndex, LocalDate startDate, LocalDate endDate, String listCompany, String sortFilterDate){
-        String listProviders = "";
-        if (!Objects.isNull(listCompany) & !listCompany.trim().isEmpty()){
+
+    public static PagedDataDTO<Order> getAll(Number pageIndex, LocalDate startDate, LocalDate endDate, String listClients, String sortFilterDate){
+        String listClient = "";
+        if (!Objects.isNull(listClients) & !listClients.trim().isEmpty()){
             //System.out.println(listCompany + "  in repos");
-            listProviders = "&providers=" + listCompany;
+            listClient = "&clients=" + listClients;
         }
         String sort = "";
         if (sortFilterDate.equals("DESC")){
@@ -47,9 +49,9 @@ public class PurchaseRepositories {
         }
 
         Request request = new Request.Builder()
-                .url(BASE_URL + "/purchases?page=" + pageIndex + "&from=" + from + "&to=" + to + sort + listProviders)
+                .url(BASE_URL + "/orders?page=" + pageIndex + "&from=" + from + "&to=" + to + sort + listClient)
                 .build();
-        System.out.println("/purchases?page=" + pageIndex + "&from=" + from + "&to=" + to + sort + listProviders);
+        //System.out.println("/purchases?page=" + pageIndex + "&from=" + from + "&to=" + to + sort + listProviders);
         OkHttpClient client = new OkHttpClient();
         Call call = client.newCall(request);
         //System.out.println(request.body());
@@ -59,14 +61,14 @@ public class PurchaseRepositories {
                 .create();
         try {
             Response response = call.execute();
-            Type typeOfT = new TypeToken<PagedDataDTO<Purchase>>(){}.getType();
+            Type typeOfT = new TypeToken<PagedDataDTO<Order>>(){}.getType();
 
             String dataJson = response.body().string();
 
             //System.out.println(dataJson);
 
             if (response.isSuccessful()){
-               return gson.fromJson(dataJson, typeOfT);
+                return gson.fromJson(dataJson, typeOfT);
             }
             else{
                 return null;
@@ -76,17 +78,17 @@ public class PurchaseRepositories {
         }
     }
 
-    public static void createPurchase(PurchaseDTO purchaseDTO){
+    public static void createOrder(OrderDTO orderDTO){
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeTypeAdapter())
                 .excludeFieldsWithoutExposeAnnotation()
                 .create();
 
-        String jsonDate = gson.toJson(purchaseDTO);
+        String jsonDate = gson.toJson(orderDTO);
         RequestBody body = RequestBody.create(JSON, jsonDate);
 
         Request request = new Request.Builder()
-                .url(BASE_URL + "/purchases/create")
+                .url(BASE_URL + "/orders/create")
                 .post(body)
                 .build();
         //System.out.println(request.url() + jsonDate);
@@ -109,10 +111,10 @@ public class PurchaseRepositories {
         }
     }
 
-    public static List<Purchase> getForReport(LocalDateTime startDate, LocalDateTime endDate){
+    public static List<Order> getForReport(LocalDateTime startDate, LocalDateTime endDate){
 
         Request request = new Request.Builder()
-                .url(BASE_URL + "/purchases/getReport?from=" + startDate.toString() + "&to=" + endDate.toString())
+                .url(BASE_URL + "/orders/getReport?from=" + startDate.toString() + "&to=" + endDate.toString())
                 .build();
         //System.out.println("/purchases?page=" + pageIndex + "&from=" + from + "&to=" + to + sort + listProviders);
         OkHttpClient client = new OkHttpClient();
@@ -124,7 +126,7 @@ public class PurchaseRepositories {
                 .create();
         try {
             Response response = call.execute();
-            Type typeOfT = new TypeToken<List<Purchase>>(){}.getType();
+            Type typeOfT = new TypeToken<List<Order>>(){}.getType();
 
             String dataJson = response.body().string();
 
@@ -140,5 +142,4 @@ public class PurchaseRepositories {
             throw new RuntimeException(e);
         }
     }
-
 }

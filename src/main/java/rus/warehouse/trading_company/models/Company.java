@@ -1,11 +1,17 @@
 package rus.warehouse.trading_company.models;
 
 import com.google.gson.annotations.Expose;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import javafx.scene.control.CheckBox;
+import lombok.NoArgsConstructor;
+
+import java.util.Objects;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Company {
     @Expose
     private Integer id;
@@ -41,7 +47,19 @@ public class Company {
                 ", street='" + street + '\'' +
                 ", house='" + house + '\'' +
                 ", phone='" + phone + '\'' +
-                ", checkbox=" + checkbox.isSelected() +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Company company = (Company) o;
+        return Objects.equals(id, company.id) && Objects.equals(name, company.name) && Objects.equals(city, company.city) && Objects.equals(street, company.street) && Objects.equals(house, company.house) && Objects.equals(phone, company.phone) && Objects.equals(checkbox, company.checkbox);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, city, street, house, phone, checkbox);
     }
 }

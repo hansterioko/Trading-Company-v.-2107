@@ -1,5 +1,6 @@
 package rus.warehouse.trading_company.controllers;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -52,14 +53,22 @@ public class SelectPurchaseCompanyController implements Initializable {
 
 
     private AddPurchaseController addPurchaseController;
+    private Boolean companyNotNull = false;
+
+    Company newCompany = new Company();
+
+    ObservableList<Company> observableList = FXCollections.observableArrayList();
 
     public SelectPurchaseCompanyController(AddPurchaseController addPurchaseController) {
         this.addPurchaseController = addPurchaseController;
+        if (addPurchaseController.getCompany() != null){
+            companyNotNull = true;
+        }
     }
 
     public void okClick(MouseEvent mouseEvent) {
         if (!Objects.isNull(chooseCompanyTable.getSelectionModel().getSelectedItem())){
-            addPurchaseController.setIdCompany(Integer.valueOf(chooseCompanyTable.getSelectionModel().getSelectedItem().getId()));
+            addPurchaseController.setIdCompany(chooseCompanyTable.getSelectionModel().getSelectedItem());
             Stage stageOld = (Stage) okBtn.getScene().getWindow();
             stageOld.close();
         }
@@ -82,11 +91,21 @@ public class SelectPurchaseCompanyController implements Initializable {
 
         getAllCompany();
 
+        if (companyNotNull){
+            for (Company company:
+                 observableList) {
+                if(company.getName().equals(addPurchaseController.getCompany().getName())){
+                    System.out.println("POBEDA");
+                    newCompany = company;
+                }
+            }
+            chooseCompanyTable.getSelectionModel().select(newCompany);
+        }
 //        this.observableList = observableList;
     }
 
     private void getAllCompany(){
-        ObservableList<Company> observableList = FXCollections.observableArrayList();
+        observableList = FXCollections.observableArrayList();
 
         for (Company company:
              CompanyRepository.getAll()) {
@@ -100,6 +119,8 @@ public class SelectPurchaseCompanyController implements Initializable {
         try {
             Stage stage = new Stage();
             FXMLLoader fxmlLoader = new FXMLLoader(RunApplication.class.getResource("add-company-view.fxml"));
+            AddCompanyController addCompanyController = new AddCompanyController();
+            fxmlLoader.setController(addCompanyController);
             Scene scene = new Scene(fxmlLoader.load());
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setTitle("Добавление поставщика");

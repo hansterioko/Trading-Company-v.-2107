@@ -1,5 +1,7 @@
 package rus.warehouse.trading_company.modelsDTO;
 
+import com.google.gson.annotations.Expose;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,16 +11,27 @@ import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class PurchaseProduct {
+    @Expose
     private String name;
+    @Expose
     private int vat;
+    @Expose
     private String category;
+    @Expose
     private String typePackaging;
+    @Expose
     private String characteristic;
+    @Expose
     private String unit;
+    @Expose
     private BigDecimal price;
+    @Expose
     private Integer count;
+    @Expose
     private LocalDateTime manufactureDate;
+    @Expose
     private LocalDateTime dateOfExpiration;
 
     // Только с датой выпуска

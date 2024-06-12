@@ -14,18 +14,25 @@ import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import rus.warehouse.trading_company.RunApplication;
+import rus.warehouse.trading_company.models.Company;
 import rus.warehouse.trading_company.models.Product;
+import rus.warehouse.trading_company.modelsDTO.PurchaseDTO;
 import rus.warehouse.trading_company.modelsDTO.PurchaseProduct;
+import rus.warehouse.trading_company.repositories.PurchaseRepositories;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -44,7 +51,8 @@ public class AddPurchaseController implements Initializable {
     @FXML
     private Button cloneToolBtn;
 
-    private Integer idCompany;
+    @Getter
+    private Company company = null;
 
 //  Таблица и колонки
     @FXML
@@ -67,6 +75,12 @@ public class AddPurchaseController implements Initializable {
     //--------------------------------------------------------
 
     private ObservableList<PurchaseProduct> observableList = FXCollections.observableArrayList();
+
+    //
+    @Setter @Getter
+    private LocalDateTime datePurchase = null;
+    @Setter @Getter
+    private boolean startCreate = false;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -96,8 +110,8 @@ public class AddPurchaseController implements Initializable {
         productTable.setItems(observableList);
     }
 
-    public void setIdCompany(Integer idCompany) {
-        this.idCompany = idCompany;
+    public void setIdCompany(Company company) {
+        this.company = company;
     }
 
     public void selectCompany(ActionEvent actionEvent) {
@@ -184,6 +198,7 @@ public class AddPurchaseController implements Initializable {
     }
 
     public void addNewProduct(String type, PurchaseProduct product){
+        System.out.println(type + " and " + product);
         if (type.equals("EDIT")){
             int index = productTable.getSelectionModel().getSelectedIndex();
             observableList.remove(index);
@@ -475,6 +490,82 @@ public class AddPurchaseController implements Initializable {
             alert.setHeaderText("Проверьте подключение к интернету!");
             alert.show();
             System.out.println(LocalTime.now() + "   Ошибка открытия окна информации о товаре! " + e.toString());
+        }
+    }
+
+    @FXML
+    void createPurchase(ActionEvent event) {
+        if (company == null){
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Не удалось создать закупку", ButtonType.OK);
+            alert.setTitle("Ошибка создания закупки");
+            alert.setHeaderText("Выберите компанию-поставщика!");
+            alert.show();
+            return;
+        }
+        if(observableList.isEmpty()){
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Не удалось создать закупку", ButtonType.OK);
+            alert.setTitle("Ошибка создания закупки");
+            alert.setHeaderText("Отсутствуют товары в закупке!");
+            alert.show();
+            return;
+        }
+        try {
+            Stage stage = new Stage();
+            FXMLLoader fxmlLoader = new FXMLLoader(RunApplication.class.getResource("select-date-view.fxml"));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            SelectDateController selectDateController = new SelectDateController(this);
+            fxmlLoader.setController(selectDateController);
+            Scene scene = new Scene(fxmlLoader.load());
+            stage.setTitle("Выбор даты закупки");
+            stage.setScene(scene);
+            stage.showAndWait();
+
+            if (startCreate){
+                BigDecimal cost = new BigDecimal("0.00");
+                BigDecimal costWithVAT = new BigDecimal("0.00");
+                List <PurchaseProduct> productList = new ArrayList<>();
+                PurchaseDTO purchaseDTO = new PurchaseDTO();
+                for (PurchaseProduct prod:
+                     observableList) {
+                     cost = cost.add(prod.getPrice().multiply(BigDecimal.valueOf(prod.getCount())));
+                        costWithVAT = costWithVAT.add(prod.getPrice().multiply(BigDecimal.valueOf(prod.getCount())).multiply(BigDecimal.valueOf(100 - prod.getVat())).divide(BigDecimal.valueOf(100)));
+                        productList.add(prod);
+                }
+
+                purchaseDTO.setDate(datePurchase);
+                purchaseDTO.setPrice(cost);
+                purchaseDTO.setProductList(productList);
+                purchaseDTO.setCostWithVAT(costWithVAT);
+                purchaseDTO.setCompany(company);
+
+                PurchaseRepositories.createPurchase(purchaseDTO);
+
+                try {
+                     stage = new Stage();
+                     fxmlLoader = new FXMLLoader(RunApplication.class.getResource("purchase-view.fxml"));
+                     scene = new Scene(fxmlLoader.load());
+                    scene.getStylesheets().add(RunApplication.class.getResource("css/purchase.css").toExternalForm());
+                    stage.setTitle("Управление закупками");
+                    stage.setScene(scene);
+                    stage.show();
+
+                    Stage stageOld = (Stage) deleteToolBtn.getScene().getWindow();
+                    stageOld.close();
+                } catch (IOException e) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "Не удалось открыть окно закупок", ButtonType.OK);
+                    alert.setTitle("Ошибка подключения");
+                    alert.setHeaderText("Проверьте подключение к интернету!");
+                    alert.show();
+                    System.out.println(LocalTime.now() + "   Ошибка открытия окна закупок! " + e.toString());
+                }
+            }
+
+        } catch (IOException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Не удалось открыть окно выбора даты", ButtonType.OK);
+            alert.setTitle("Ошибка подключения");
+            alert.setHeaderText("Проверьте подключение к интернету!");
+            alert.show();
+            System.out.println(LocalTime.now() + "   Ошибка открытия окна выбора даты! " + e.toString());
         }
     }
 }

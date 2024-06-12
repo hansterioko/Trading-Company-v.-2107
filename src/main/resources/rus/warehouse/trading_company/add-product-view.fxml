@@ -97,7 +97,7 @@
                   <Insets left="40.0" top="13.0" />
                </GridPane.margin>
             </Label>
-            <Label text="Цена закупки:" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="TOP">
+            <Label text="Цена закупки (без НДС):" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="TOP">
                <GridPane.margin>
                   <Insets left="10.0" top="10.0" />
                </GridPane.margin>

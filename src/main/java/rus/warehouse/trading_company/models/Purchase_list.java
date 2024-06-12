@@ -6,21 +6,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Purchase {
+public class Purchase_list {
     @Expose
     private Integer id;
     @Expose
-    private String date;
+    private Product product;
+    private Purchase purchase;
     @Expose
-    private BigDecimal price;
-    @Expose
-    private BigDecimal costWithVAT;
-    @Expose
-    private String company;
+    private Integer count;
 }

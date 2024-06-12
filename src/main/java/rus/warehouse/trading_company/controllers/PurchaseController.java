@@ -129,7 +129,7 @@ public class PurchaseController implements Initializable {
 
         for (Purchase purchase:
                 purchaseList) {
-            data.add(new Purchase(purchase.getId(), purchase.getDate(), purchase.getPrice(), purchase.getCompany()));
+            data.add(new Purchase(purchase.getId(), purchase.getDate(), purchase.getPrice(), purchase.getCostWithVAT(), purchase.getCompany()));
         }
 
         detailPurchaseBtn.setDisable(true);
@@ -234,8 +234,29 @@ public class PurchaseController implements Initializable {
         }
     }
 
-    public void detailPurchaseAction(ActionEvent actionEvent) {
+    public void detailPurchaseAction(ActionEvent actionEvent) throws IOException {
         //System.out.println(purchaseTable.getSelectionModel().getSelectedItem());
+        try {
+            Stage stage = new Stage();
+            FXMLLoader fxmlLoader = new FXMLLoader(RunApplication.class.getResource("detail-purchase-view.fxml"));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            DetailPurchaseController detailPurchaseController = new DetailPurchaseController(purchaseTable.getSelectionModel().getSelectedItem().getId());
+            fxmlLoader.setController(detailPurchaseController);
+            Scene scene = new Scene(fxmlLoader.load());
+            stage.setTitle("Подробнее о закупке");
+            stage.setScene(scene);
+            stage.showAndWait();
+
+
+        } catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Не удалось открыть окно добавления закупок", ButtonType.OK);
+            alert.setTitle("Ошибка подключения");
+            alert.setHeaderText("Проверьте подключение к интернету!");
+            alert.show();
+            System.out.println(LocalTime.now() + "   Ошибка открытия окна добавления закупок! " + e.toString());
+        }
+
+
         purchaseTable.getSelectionModel().clearSelection();
         detailPurchaseBtn.setDisable(true);
     }
@@ -244,5 +265,10 @@ public class PurchaseController implements Initializable {
         if (!Objects.isNull(purchaseTable.getSelectionModel().getSelectedItem())){
             detailPurchaseBtn.setDisable(false);
         }
+    }
+
+    @FXML
+    void reportAction(ActionEvent event) {
+
     }
 }

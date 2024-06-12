@@ -106,7 +106,15 @@
                   <Font size="14.0" />
                </font>
                <GridPane.margin>
-                  <Insets left="3.0" right="3.0" top="5.0" />
+                  <Insets left="3.0" right="3.0" top="55.0" />
+               </GridPane.margin>
+            </Button>
+            <Button fx:id="reportBtn" mnemonicParsing="false" onAction="#reportAction" text="Отчёт о заданном промежутке" textAlignment="CENTER" textFill="#218605" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <font>
+                  <Font size="14.0" />
+               </font>
+               <GridPane.margin>
+                  <Insets left="5.0" right="5.0" />
                </GridPane.margin>
             </Button>
          </children>
