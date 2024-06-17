@@ -218,7 +218,7 @@ public class WarehouseController implements Initializable {
 
     public void detailProductAction(ActionEvent actionEvent) {
         try {
-            PurchaseProduct pProd = new PurchaseProduct(productTable.getSelectionModel().getSelectedItem().getName(), productTable.getSelectionModel().getSelectedItem().getVat()
+            PurchaseProduct pProd = new PurchaseProduct(productTable.getSelectionModel().getSelectedItem().getId(), productTable.getSelectionModel().getSelectedItem().getName(), productTable.getSelectionModel().getSelectedItem().getVat()
                     ,productTable.getSelectionModel().getSelectedItem().getCategory(), productTable.getSelectionModel().getSelectedItem().getTypePackaging()
                     ,productTable.getSelectionModel().getSelectedItem().getCharacteristic(), productTable.getSelectionModel().getSelectedItem().getUnit()
                     ,productTable.getSelectionModel().getSelectedItem().getPrice(), productTable.getSelectionModel().getSelectedItem().getCountOnWarehouse(), productTable.getSelectionModel().getSelectedItem().getDateOfManufacture()
@@ -227,7 +227,7 @@ public class WarehouseController implements Initializable {
             Stage stage = new Stage();
             FXMLLoader fxmlLoader = new FXMLLoader(RunApplication.class.getResource("add-product-view.fxml"));
             stage.initModality(Modality.APPLICATION_MODAL);
-            AddProductController addProductController = new AddProductController(pProd);
+            AddProductController addProductController = new AddProductController(pProd, true);
             fxmlLoader.setController(addProductController);
             Scene scene = new Scene(fxmlLoader.load());
             stage.setTitle("Информация о товаре");
@@ -263,6 +263,22 @@ public class WarehouseController implements Initializable {
 
     @FXML
     void reportAction(ActionEvent event) {
+        try {
+            Stage stage = new Stage();
+            FXMLLoader fxmlLoader = new FXMLLoader(RunApplication.class.getResource("decomhouse-view.fxml"));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            Scene scene = new Scene(fxmlLoader.load());
+            //scene.getStylesheets().add(RunApplication.class.getResource("css/main.css").toExternalForm());
+            stage.setTitle("Список списанных товаров");
+            stage.setScene(scene);
+            stage.showAndWait();
 
+        } catch (IOException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Не удалось открыть окно списанных товаров", ButtonType.OK);
+            alert.setTitle("Ошибка подключения");
+            alert.setHeaderText("Проверьте подключение к интернету!");
+            alert.show();
+            System.out.println(LocalTime.now() + "   Ошибка открытия списанных товаров! " + e.toString());
+        }
     }
 }

@@ -1,5 +1,6 @@
 package rus.warehouse.trading_company.models;
 
+import com.google.gson.annotations.Expose;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,9 +13,14 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Order {
+    @Expose
     private Integer id;
+    @Expose
     private BigDecimal price;
+    @Expose
     private BigDecimal costWithVat;
+    @Expose
     private UserClient userclient;
+    @Expose
     private LocalDateTime date;
 }

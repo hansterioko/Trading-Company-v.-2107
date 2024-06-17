@@ -51,7 +51,7 @@ public class OrderRepository {
         Request request = new Request.Builder()
                 .url(BASE_URL + "/orders?page=" + pageIndex + "&from=" + from + "&to=" + to + sort + listClient)
                 .build();
-        //System.out.println("/purchases?page=" + pageIndex + "&from=" + from + "&to=" + to + sort + listProviders);
+        System.out.println("/orders?page=" + pageIndex + "&from=" + from + "&to=" + to + sort + listClient);
         OkHttpClient client = new OkHttpClient();
         Call call = client.newCall(request);
         //System.out.println(request.body());
@@ -65,7 +65,7 @@ public class OrderRepository {
 
             String dataJson = response.body().string();
 
-            //System.out.println(dataJson);
+            System.out.println(dataJson);
 
             if (response.isSuccessful()){
                 return gson.fromJson(dataJson, typeOfT);

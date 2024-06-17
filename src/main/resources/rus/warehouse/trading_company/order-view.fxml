@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="rus.warehouse.trading_company.controllers.PurchaseController">
+<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="rus.warehouse.trading_company.controllers.OrderController">
    <children>
       <GridPane layoutY="37.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="0.0" prefHeight="600.0" prefWidth="900.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
@@ -26,23 +26,23 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <TableView fx:id="purchaseTable" maxHeight="447.0" onMouseClicked="#clickOnTable" prefHeight="447.0" prefWidth="762.0" style="-fx-fixed-cell-size: 30;" GridPane.rowIndex="1" GridPane.valignment="BOTTOM">
+            <TableView fx:id="orderTable" maxHeight="447.0" onMouseClicked="#clickOnTable" prefHeight="447.0" prefWidth="762.0" style="-fx-fixed-cell-size: 30;" GridPane.rowIndex="1" GridPane.valignment="BOTTOM">
               <columns>
                 <TableColumn fx:id="dateColumn" editable="false" prefWidth="167.20000648498535" text="Дата" />
-                <TableColumn fx:id="companyColumn" editable="false" prefWidth="320.0" text="Поставщик" />
+                <TableColumn fx:id="clientColumn" editable="false" prefWidth="320.0" text="Получаетль" />
                   <TableColumn fx:id="idColumn" prefWidth="0.0" text="id" visible="false" />
                   <TableColumn fx:id="costColumn" editable="false" prefWidth="267.2000427246094" text="Стоимость" />
               </columns>
             </TableView>
 
             <Label fx:id="countRowsLabel" alignment="CENTER_RIGHT" prefHeight="26.0" prefWidth="246.0" text="Всего записей: " textAlignment="RIGHT" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
-            <Pagination fx:id="purchasePagination" onMouseClicked="#clickToPaginationPanel" onMouseEntered="#clickToPaginationPanel" pageCount="256788" prefHeight="44.0" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
+            <Pagination fx:id="orderPagination" onMouseClicked="#clickToPaginationPanel" onMouseEntered="#clickToPaginationPanel" pageCount="256788" prefHeight="44.0" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
             <Button fx:id="backBtn" mnemonicParsing="false" onAction="#backAction" text="Назад" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
                <GridPane.margin>
                   <Insets />
                </GridPane.margin>
             </Button>
-            <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#addNewPurchaseBtn" prefHeight="70.0" prefWidth="130.0" text="Добавление закупки" textAlignment="CENTER" textFill="#3a44ba" wrapText="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+            <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#addNewOrderAction" prefHeight="70.0" prefWidth="130.0" text="Добавление поставки" textAlignment="CENTER" textFill="#3a44ba" wrapText="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
                <font>
                   <Font size="14.0" />
                </font>
@@ -86,22 +86,22 @@
                   <Insets bottom="2.0" left="327.0" />
                </GridPane.margin>
             </DatePicker>
-             <Button fx:id="searchBtn" mnemonicParsing="false" onMouseClicked="#searchByDateClick" prefHeight="26.0" prefWidth="78.0" text="Поиск" GridPane.halignment="RIGHT" GridPane.valignment="BOTTOM">
+             <Button fx:id="searchBtn" mnemonicParsing="false" onAction="#searchAction" onMouseClicked="#searchByDateClick" prefHeight="26.0" prefWidth="78.0" text="Поиск" GridPane.halignment="RIGHT" GridPane.valignment="BOTTOM">
                <GridPane.margin>
                   <Insets bottom="2.0" right="165.0" />
                </GridPane.margin>
             </Button>
-             <Button mnemonicParsing="false" onMouseClicked="#dropDateClick" prefHeight="26.0" prefWidth="66.0" text="Сброс" GridPane.halignment="RIGHT" GridPane.valignment="BOTTOM">
+             <Button mnemonicParsing="false" onAction="#clearAction" onMouseClicked="#dropDateClick" prefHeight="26.0" prefWidth="66.0" text="Сброс" GridPane.halignment="RIGHT" GridPane.valignment="BOTTOM">
                <GridPane.margin>
                   <Insets bottom="2.0" right="80.0" />
                </GridPane.margin>
             </Button>
-             <Button fx:id="providerBtn" mnemonicParsing="false" onMouseClicked="#chooseProviderClick" prefHeight="26.0" prefWidth="166.0" text="Выбрать поставщика" GridPane.halignment="RIGHT" GridPane.valignment="TOP">
+             <Button fx:id="clientsBtn" mnemonicParsing="false" onMouseClicked="#chooseClientsClick" prefHeight="26.0" prefWidth="166.0" text="Выбрать получателя" GridPane.halignment="RIGHT" GridPane.valignment="TOP">
                <GridPane.margin>
                   <Insets right="80.0" top="10.0" />
                </GridPane.margin>
             </Button>
-            <Button fx:id="detailPurchaseBtn" disable="true" mnemonicParsing="false" onAction="#detailPurchaseAction" text="Подробнее о закупке" textAlignment="CENTER" textFill="#a46500" wrapText="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
+            <Button fx:id="detailOrderBtn" disable="true" mnemonicParsing="false" onAction="#detailOrderAction" text="Подробнее о поставке" textAlignment="CENTER" textFill="#a46500" wrapText="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
                <font>
                   <Font size="14.0" />
                </font>

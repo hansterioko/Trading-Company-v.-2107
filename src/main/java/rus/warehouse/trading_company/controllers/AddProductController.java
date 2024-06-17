@@ -3,22 +3,28 @@ package rus.warehouse.trading_company.controllers;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import jfxtras.scene.control.LocalDateTextField;
 import jfxtras.scene.control.LocalDateTimeTextField;
+import rus.warehouse.trading_company.RunApplication;
 import rus.warehouse.trading_company.helpers.ValueOfExpiration;
 import rus.warehouse.trading_company.helpers.ValueOfVisibleExpiration;
 import rus.warehouse.trading_company.models.Product;
 import rus.warehouse.trading_company.modelsDTO.PurchaseProduct;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -95,6 +101,9 @@ public class AddProductController implements Initializable {
     // Для типа контроллера
     private String typeController;
 
+    // Для списания
+    private Integer countWarehouse;
+    private Integer idProd;
 
     private void manufactureDateIsAfter(){
         Alert alert = new Alert(Alert.AlertType.ERROR, "Дата выпуска не может быть позднее конца срока годности!", ButtonType.OK);
@@ -106,12 +115,32 @@ public class AddProductController implements Initializable {
     @FXML
     void addProduct(ActionEvent event) {
         //System.out.println(measureCBox.getValue());
-        if (!nameField.getText().trim().equals("") && vatSpinner.getValue() != null && countSpinner.getValue() != null && (priceKopeckSpinner.getValue() != null || priceSpinner.getValue() != null) && (priceKopeckSpinner.getValue() != 0 || priceSpinner.getValue() != 0) && !unitField.getText().trim().equals("")){
+        if (typeController.equals("DECOM")) {
+            try {
+                Stage stage = new Stage();
+                FXMLLoader fxmlLoader = new FXMLLoader(RunApplication.class.getResource("decom-prod-view.fxml"));
+                stage.initModality(Modality.APPLICATION_MODAL);
+                DecomProductController decomProductController = new DecomProductController(countWarehouse, idProd);
+                fxmlLoader.setController(decomProductController);
+                Scene scene = new Scene(fxmlLoader.load());
+                stage.setTitle("Списание товара");
+                stage.setScene(scene);
+                stage.showAndWait();
+
+            } catch (IOException e) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Не удалось открыть окно информации о товаре", ButtonType.OK);
+                alert.setTitle("Ошибка подключения");
+                alert.setHeaderText("Проверьте подключение к интернету!");
+                alert.show();
+                System.out.println(LocalTime.now() + "   Ошибка открытия окна информации о товаре! " + e.toString());
+            }
+        } else {
+        if (!nameField.getText().trim().equals("") && vatSpinner.getValue() != null && countSpinner.getValue() != null && (priceKopeckSpinner.getValue() != null || priceSpinner.getValue() != null) && (priceKopeckSpinner.getValue() != 0 || priceSpinner.getValue() != 0) && !unitField.getText().trim().equals("")) {
             Double costD = Double.valueOf(priceSpinner.getValue()) + (Double.valueOf(priceKopeckSpinner.getValue()) * 0.01);
             BigDecimal cost = new BigDecimal(costD.toString());
 
-            if(manufactureDatePicker.getLocalDateTime() != null) {
-                if (manufactureDatePicker.getLocalDateTime().isAfter(LocalDateTime.now())){
+            if (manufactureDatePicker.getLocalDateTime() != null) {
+                if (manufactureDatePicker.getLocalDateTime().isAfter(LocalDateTime.now())) {
                     Alert alert = new Alert(Alert.AlertType.ERROR, "Дата выпуска не может быть позднее текущей даты!", ButtonType.OK);
                     alert.setTitle("Добавление товара");
                     alert.setHeaderText("Ошибка в дате выпуска!");
@@ -213,8 +242,7 @@ public class AddProductController implements Initializable {
                         alert.show();
                     }
                 }
-            }
-            else{
+            } else {
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Дата выпуска не указана");
                 ButtonType yesTypeBtn = new ButtonType("Да");
                 ButtonType noTypeBtn = new ButtonType("Нет");
@@ -227,20 +255,20 @@ public class AddProductController implements Initializable {
 
                 Optional<ButtonType> option = alert.showAndWait();
 
-                if (option.get() == yesTypeBtn){
+                if (option.get() == yesTypeBtn) {
                     // добавление без даты выпуска и срока годности
                     addPurchaseController.addNewProduct(typeController, new PurchaseProduct(nameField.getText(), vatSpinner.getValue(), categoryField.getText(), summaryField.getText(), unitField.getText(), cost, countSpinner.getValue(), typePackagingField.getText()));
                     Stage stageOld = (Stage) backBtn.getScene().getWindow();
                     stageOld.close();
                 }
             }
-        }
-        else {
+        } else {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Не все поля заполнены!", ButtonType.OK);
             alert.setTitle("Ошибка добавления");
             alert.setHeaderText("Заполните обязательные поля!");
             alert.showAndWait();
         }
+    }
     }
 
     @FXML
@@ -270,6 +298,17 @@ public class AddProductController implements Initializable {
             Platform.runLater(()->addProdBtn.setVisible(false));
             Platform.runLater(()->setField(product));
             Platform.runLater(this::setFieldNoEdit);
+    }
+
+    public AddProductController(PurchaseProduct product, boolean isDecom) {
+        this.addPurchaseController = addPurchaseController;
+        idProd = product.getId();
+        countWarehouse = product.getCount();
+        //addProdBtn.setVisible(false);
+        typeController = "DECOM";
+        Platform.runLater(()->addProdBtn.setText("Списать"));
+        Platform.runLater(()->setField(product));
+        Platform.runLater(this::setFieldNoEdit);
     }
 
     public AddProductController(AddPurchaseController addPurchaseController, String type, PurchaseProduct product) {

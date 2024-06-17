@@ -101,7 +101,7 @@
                   <Insets left="130.0" top="10.0" />
                </GridPane.margin>
             </ComboBox>
-            <Button mnemonicParsing="false" onAction="#reportAction" text="Отчёт по списанным товарам" textAlignment="CENTER" textFill="#007e07" wrapText="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
+            <Button mnemonicParsing="false" onAction="#reportAction" text="Списанные товары" textAlignment="CENTER" textFill="#007e07" wrapText="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
                <font>
                   <Font size="14.0" />
                </font>

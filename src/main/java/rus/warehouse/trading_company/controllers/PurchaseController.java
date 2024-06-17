@@ -160,6 +160,7 @@ public class PurchaseController implements Initializable {
         endDate = endDatePicker.getValue();
         purchasePagination.setCurrentPageIndex(0);
 
+        purchaseTable.getSelectionModel().select(null);
         getPurchase();
     }
 
@@ -246,7 +247,6 @@ public class PurchaseController implements Initializable {
             stage.setTitle("Подробнее о закупке");
             stage.setScene(scene);
             stage.showAndWait();
-
 
         } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Не удалось открыть окно добавления закупок", ButtonType.OK);

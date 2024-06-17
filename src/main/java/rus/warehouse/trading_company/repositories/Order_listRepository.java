@@ -21,7 +21,7 @@ public class Order_listRepository {
     public static Order_listDTO getByIdOrder(Integer idOrder){
 
         Request request = new Request.Builder()
-                .url(BASE_URL + "/orders/detail?idOrder=" + idOrder)
+                .url(BASE_URL + "/orders/details?idOrder=" + idOrder)
                 .build();
 
         OkHttpClient client = new OkHttpClient();

@@ -102,7 +102,7 @@ public class DetailPurchaseController implements Initializable {
     @FXML
     void infoAboutProd(ActionEvent event) {
         try {
-            PurchaseProduct pProd = new PurchaseProduct(productTable.getSelectionModel().getSelectedItem().getProduct().getName(), productTable.getSelectionModel().getSelectedItem().getProduct().getVat()
+            PurchaseProduct pProd = new PurchaseProduct(productTable.getSelectionModel().getSelectedItem().getProduct().getId(), productTable.getSelectionModel().getSelectedItem().getProduct().getName(), productTable.getSelectionModel().getSelectedItem().getProduct().getVat()
             ,productTable.getSelectionModel().getSelectedItem().getProduct().getCategory(), productTable.getSelectionModel().getSelectedItem().getProduct().getTypePackaging()
             ,productTable.getSelectionModel().getSelectedItem().getProduct().getCharacteristic(), productTable.getSelectionModel().getSelectedItem().getProduct().getUnit()
             ,productTable.getSelectionModel().getSelectedItem().getProduct().getPrice(), productTable.getSelectionModel().getSelectedItem().getCount(), productTable.getSelectionModel().getSelectedItem().getProduct().getDateOfManufacture()

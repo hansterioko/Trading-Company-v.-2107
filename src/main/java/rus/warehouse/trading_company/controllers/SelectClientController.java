@@ -9,7 +9,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import rus.warehouse.trading_company.models.Company;
-import rus.warehouse.trading_company.models.Purchase;
 import rus.warehouse.trading_company.models.UserClient;
 import rus.warehouse.trading_company.repositories.CompanyRepository;
 import rus.warehouse.trading_company.repositories.UserClientRepository;
@@ -18,59 +17,59 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class SelectCompanyController implements Initializable {
+public class SelectClientController implements Initializable {
     @FXML
     private TableColumn<Company, CheckBox> chekColumn;
 
     @FXML
-    private TableView<Company> chooseCompanyTable;
+    private TableView<UserClient> chooseCompanyTable;
 
     @FXML
-    private TableColumn<Company, String> cityColumn;
+    private TableColumn<UserClient, String> cityColumn;
 
     @FXML
-    private TableColumn<Company, String> contactColumn;
+    private TableColumn<UserClient, String> contactColumn;
 
     @FXML
-    private TableColumn<Company, String> houseColumn;
+    private TableColumn<UserClient, String> houseColumn;
 
     @FXML
-    private TableColumn<Company, Integer> idColumn;
+    private TableColumn<UserClient, Integer> idColumn;
 
     @FXML
-    private TableColumn<Company, String> nameColumn;
+    private TableColumn<UserClient, String> nameColumn;
 
     @FXML
     private Button okBtn;
 
     @FXML
-    private TableColumn<Company, String> streetColumn;
+    private TableColumn<UserClient, String> streetColumn;
 
-    private String listIdCompany = "";
+    private String listIdClient = "";
 
-    private PurchaseController purchaseController;
+    private OrderController orderController;
 
-    public SelectCompanyController(PurchaseController purchaseController) {
-        this.purchaseController = purchaseController;
+    public SelectClientController(OrderController orderController) {
+        this.orderController = orderController;
     }
 
-    ObservableList<Company> observableList = FXCollections.observableArrayList();
+    ObservableList<UserClient> observableList = FXCollections.observableArrayList();
 
     public void okClick(MouseEvent mouseEvent) {
         boolean flag = false;
 //        System.out.println(observableList);
-        for (Company company:
+        for (UserClient userClient:
              observableList) {
-            if(company.getCheckbox().isSelected()){
+            if(userClient.getCheckbox().isSelected()){
                 flag = true;
-                listIdCompany += "," + company.getId();
+                listIdClient += "," + userClient.getId();
             }
         }
         if (flag){
-            listIdCompany = listIdCompany.substring(1);
+            listIdClient = listIdClient.substring(1);
         }
         if (!flag){
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Ни одна из компаний не выбрана!", new ButtonType("Отмена"), ButtonType.OK);
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Ни один из получателей не выбран!", new ButtonType("Отмена"), ButtonType.OK);
             alert.setTitle("Ошибка фильтра");
             alert.setHeaderText("Закрыть окно фильтра?");
 
@@ -81,7 +80,7 @@ public class SelectCompanyController implements Initializable {
             }
         }
         //System.out.println(listIdCompany + "В СЕЛЕКТ");
-        purchaseController.setListProviders(listIdCompany);
+        orderController.setListClients(listIdClient);
         Stage stageOld = (Stage) okBtn.getScene().getWindow();
         stageOld.close();
 //        System.out.println(listIdCompany);
@@ -93,34 +92,34 @@ public class SelectCompanyController implements Initializable {
 //                new Company(1, "fs", "fdss", "fdsf", "fsdf", "987"),
 //                new Company(1, "fs", "fdss", "fdsf", "fsdf", "987"));
 
-        idColumn.setCellValueFactory(new PropertyValueFactory<Company, Integer>("id"));
-        nameColumn.setCellValueFactory(new PropertyValueFactory<Company, String>("name"));
-        cityColumn.setCellValueFactory(new PropertyValueFactory<Company, String>("city"));
-        streetColumn.setCellValueFactory(new PropertyValueFactory<Company, String>("street"));
-        houseColumn.setCellValueFactory(new PropertyValueFactory<Company, String>("house"));
-        contactColumn.setCellValueFactory(new PropertyValueFactory<Company, String>("phone"));
+        idColumn.setCellValueFactory(new PropertyValueFactory<UserClient, Integer>("id"));
+        nameColumn.setCellValueFactory(new PropertyValueFactory<UserClient, String>("name"));
+        cityColumn.setCellValueFactory(new PropertyValueFactory<UserClient, String>("city"));
+        streetColumn.setCellValueFactory(new PropertyValueFactory<UserClient, String>("street"));
+        houseColumn.setCellValueFactory(new PropertyValueFactory<UserClient, String>("house"));
+        contactColumn.setCellValueFactory(new PropertyValueFactory<UserClient, String>("phone"));
         chekColumn.setCellValueFactory(new PropertyValueFactory<Company, CheckBox>("checkbox"));
 
-        getAllCompany();
+        getAllClient();
 
 //        this.observableList = observableList;
     }
 
-    private void getAllCompany(){
-        List<Company> companyList = CompanyRepository.getAll();
+    private void getAllClient(){
+        List<UserClient> userList = UserClientRepository.getAll();
 
-        if (companyList != null){
-            for (Company company:
-                    companyList) {
-                company.setCheckbox(new CheckBox());
-                observableList.add(company);
+        if (userList != null){
+            for (UserClient client:
+                    userList) {
+                client.setCheckbox(new CheckBox());
+                observableList.add(client);
             }
             chooseCompanyTable.setItems(observableList);
         }
         else {
-            Alert alert = new Alert(Alert.AlertType.WARNING, "Не удалось открыть окно выбора поставщика", ButtonType.OK);
+            Alert alert = new Alert(Alert.AlertType.WARNING, "Не удалось открыть окно выбора получателя", ButtonType.OK);
             alert.setTitle("Ошибка фильрации");
-            alert.setHeaderText("Поставщики не были добавлены");
+            alert.setHeaderText("Получатели не были добавлены");
             alert.show();
         }
     }

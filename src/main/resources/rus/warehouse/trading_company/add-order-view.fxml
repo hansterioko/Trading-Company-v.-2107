@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Pagination?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="rus.warehouse.trading_company.controllers.AddOrderController">
+   <children>
+      <GridPane layoutY="37.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="0.0" prefHeight="700.0" prefWidth="900.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="722.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="60.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="355.39996337890625" minHeight="10.0" prefHeight="263.79998779296875" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="149.00003662109373" minHeight="10.0" prefHeight="28.19999999999999" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="299.2" minHeight="10.0" prefHeight="299.2" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <TableView fx:id="productTable" maxHeight="300.0" onMouseClicked="#clickOnTable" prefHeight="300.0" prefWidth="762.0" style="-fx-fixed-cell-size: 30;" GridPane.rowIndex="1" GridPane.valignment="TOP">
+              <columns>
+                  <TableColumn fx:id="idColumn" editable="false" prefWidth="0.0" text="id" visible="false" />
+                <TableColumn fx:id="nameColumn" editable="false" prefWidth="285.59996950626373" text="Наименование" />
+                <TableColumn fx:id="priceColumn" editable="false" prefWidth="202.40005493164062" text="Цена закупки" />
+                  <TableColumn fx:id="dateExpireColumn" editable="false" prefWidth="267.2000427246094" text="Конец срока годности" />
+                  <TableColumn fx:id="countColumn" editable="false" prefWidth="267.2000427246094" text="Кол-во на складе" />
+              </columns>
+            </TableView>
+
+            <Label fx:id="countRowsLabel" alignment="CENTER_RIGHT" prefHeight="26.0" prefWidth="246.0" text="Всего записей: " textAlignment="RIGHT" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="TOP" />
+            <Pagination fx:id="productPagination" maxHeight="-Infinity" onMouseClicked="#clickToPaginationPanel" onMouseEntered="#clickToPaginationPanel" pageCount="256788" prefHeight="44.0" prefWidth="100.0" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="TOP">
+               <GridPane.margin>
+                  <Insets left="150.0" />
+               </GridPane.margin></Pagination>
+            <Button fx:id="backBtn" mnemonicParsing="false" onAction="#backAction" text="Назад" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="3" GridPane.valignment="BOTTOM">
+               <GridPane.margin>
+                  <Insets bottom="10.0" right="10.0" />
+               </GridPane.margin>
+            </Button>
+             <Label text="Сортировка по:" GridPane.halignment="RIGHT" GridPane.valignment="TOP">
+                 <font>
+                     <Font size="16.0" />
+                 </font>
+               <padding>
+                  <Insets left="10.0" top="10.0" />
+               </padding>
+               <GridPane.margin>
+                  <Insets right="400.0" />
+               </GridPane.margin>
+             </Label>
+             <Button fx:id="filterBtn" mnemonicParsing="false" onAction="#filterByAscDesc" prefHeight="26.0" prefWidth="166.0" text="По убыванию" GridPane.halignment="RIGHT" GridPane.valignment="TOP">
+               <GridPane.margin>
+                  <Insets right="10.0" top="10.0" />
+               </GridPane.margin>
+            </Button>
+             <Button fx:id="searchBtn" mnemonicParsing="false" onAction="#searchByProdName" prefHeight="26.0" prefWidth="78.0" text="Поиск" GridPane.halignment="RIGHT" GridPane.valignment="BOTTOM">
+               <GridPane.margin>
+                  <Insets bottom="2.0" right="85.0" />
+               </GridPane.margin>
+            </Button>
+             <Button mnemonicParsing="false" onAction="#clearSearch" prefHeight="26.0" prefWidth="66.0" text="Сброс" GridPane.halignment="RIGHT" GridPane.valignment="BOTTOM">
+               <GridPane.margin>
+                  <Insets bottom="2.0" right="10.0" />
+               </GridPane.margin>
+            </Button>
+            <Button fx:id="detailProductBtn" disable="true" mnemonicParsing="false" onAction="#detailProductAction" text="Информация о товаре" textAlignment="CENTER" textFill="#a46500" wrapText="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+               <font>
+                  <Font size="14.0" />
+               </font>
+               <GridPane.margin>
+                  <Insets left="3.0" right="3.0" top="5.0" />
+               </GridPane.margin>
+            </Button>
+            <Label text="Наименование:" GridPane.halignment="RIGHT" GridPane.valignment="BOTTOM">
+               <font>
+                  <Font size="16.0" />
+               </font>
+               <padding>
+                  <Insets left="10.0" top="10.0" />
+               </padding>
+               <GridPane.margin>
+                  <Insets bottom="3.0" right="410.0" />
+               </GridPane.margin>
+            </Label>
+            <TextField fx:id="searchField" maxWidth="-Infinity" prefHeight="26.0" prefWidth="230.0" GridPane.halignment="RIGHT" GridPane.valignment="BOTTOM">
+               <GridPane.margin>
+                  <Insets bottom="3.0" right="175.0" />
+               </GridPane.margin>
+            </TextField>
+            <ComboBox fx:id="typeSortingCBox" prefWidth="200.0" GridPane.halignment="RIGHT" GridPane.valignment="TOP">
+               <GridPane.margin>
+                  <Insets right="190.0" top="10.0" />
+               </GridPane.margin>
+            </ComboBox>
+            <Button mnemonicParsing="false" onAction="#createOrder" text="Создать поставку" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+               <font>
+                  <Font size="14.0" />
+               </font>
+               <GridPane.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </GridPane.margin>
+            </Button>
+            <TableView fx:id="orderProdTable" editable="true" onMouseClicked="#clickOnOrdTable" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="3">
+              <columns>
+                <TableColumn fx:id="idOrdColumn" editable="false" prefWidth="75.0" text="ID" visible="false" />
+                <TableColumn fx:id="nameOrdColumn" editable="false" prefWidth="283.99999392032623" text="Наименование" />
+                  <TableColumn fx:id="priceOrdColumn" prefWidth="211.19998168945312" text="Цена" />
+                  <TableColumn fx:id="countOrdColumn" prefWidth="170.40005493164062" text="Количество" />
+                  <TableColumn fx:id="vatOrdColumn" prefWidth="91.20001220703125" text="НДС" />
+              </columns>
+            </TableView>
+            <Label text="Товары на складе" textOverrun="CLIP" GridPane.halignment="LEFT" GridPane.valignment="CENTER">
+               <font>
+                  <Font size="24.0" />
+               </font>
+               <GridPane.margin>
+                  <Insets left="10.0" />
+               </GridPane.margin>
+            </Label>
+            <Label text="Товары в поставке" textOverrun="CLIP" GridPane.rowIndex="2">
+               <font>
+                  <Font size="24.0" />
+               </font>
+               <GridPane.margin>
+                  <Insets left="10.0" />
+               </GridPane.margin>
+            </Label>
+            <Button mnemonicParsing="false" onAction="#deleteProduct" text="Удалить товар" textAlignment="CENTER" textFill="#791616" wrapText="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="TOP">
+               <font>
+                  <Font size="14.0" />
+               </font>
+               <GridPane.margin>
+                  <Insets left="15.0" right="15.0" top="10.0" />
+               </GridPane.margin>
+            </Button>
+            <Button fx:id="moveProdBtn" disable="true" mnemonicParsing="false" onAction="#moveProduct" text="Добавить в поставку" textAlignment="CENTER" textFill="#1b630e" wrapText="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="BOTTOM">
+               <font>
+                  <Font size="14.0" />
+               </font>
+               <GridPane.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" />
+               </GridPane.margin>
+            </Button>
+            <Button mnemonicParsing="false" onAction="#selectClient" text="Выбор получателя" textAlignment="CENTER" textFill="#370f6b" wrapText="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
+               <font>
+                  <Font size="14.0" />
+               </font>
+               <GridPane.margin>
+                  <Insets left="5.0" right="5.0" top="10.0" />
+               </GridPane.margin>
+            </Button>
+         </children>
+      </GridPane>
+   </children>
+</AnchorPane>

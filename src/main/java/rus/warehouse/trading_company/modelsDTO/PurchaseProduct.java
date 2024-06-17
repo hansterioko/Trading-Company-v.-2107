@@ -11,8 +11,8 @@ import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class PurchaseProduct {
+    private Integer id;
     @Expose
     private String name;
     @Expose
@@ -71,5 +71,19 @@ public class PurchaseProduct {
         this.price = price;
         this.count = count;
         this.typePackaging = typePackaging;
+    }
+
+    public PurchaseProduct(Integer id, String name, int vat, String category, String typePackaging, String characteristic, String unit, BigDecimal price, Integer count, LocalDateTime manufactureDate, LocalDateTime dateOfExpiration) {
+        this.id = id;
+        this.name = name;
+        this.vat = vat;
+        this.category = category;
+        this.typePackaging = typePackaging;
+        this.characteristic = characteristic;
+        this.unit = unit;
+        this.price = price;
+        this.count = count;
+        this.manufactureDate = manufactureDate;
+        this.dateOfExpiration = dateOfExpiration;
     }
 }

@@ -49,7 +49,7 @@ public class UserClientRepository {
         }
     }
 
-    public static String createCompany(UserClient userClient){
+    public static String createClient(UserClient userClient){
         Gson gson = new GsonBuilder()
                 .excludeFieldsWithoutExposeAnnotation()
                 .create();

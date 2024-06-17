@@ -4,7 +4,9 @@ import com.google.gson.annotations.Expose;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import rus.warehouse.trading_company.FXModels.OrderProductFX;
 import rus.warehouse.trading_company.models.Company;
+import rus.warehouse.trading_company.models.Order_list;
 import rus.warehouse.trading_company.models.UserClient;
 
 import java.math.BigDecimal;
@@ -24,5 +26,5 @@ public class OrderDTO {
     @Expose
     private UserClient userClient;
     @Expose
-    private List<PurchaseProduct> productList;
+    private List<OrderProductFX> productList;
 }

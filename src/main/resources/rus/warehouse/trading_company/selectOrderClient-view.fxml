@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="415.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <TableView fx:id="chooseClientTable" layoutX="10.0" layoutY="14.0" prefHeight="350.0" prefWidth="780.0">
+        <columns>
+          <TableColumn fx:id="idColumn" prefWidth="75.0" text="id" visible="false" />
+            <TableColumn fx:id="nameColumn" prefWidth="206.4000244140625" text="Наименование" />
+          <TableColumn fx:id="cityColumn" prefWidth="157.5999755859375" text="Город" />
+            <TableColumn fx:id="streetColumn" prefWidth="209.60003662109375" text="Улица" />
+            <TableColumn fx:id="houseColumn" prefWidth="57.60003662109375" text="Дом" />
+            <TableColumn fx:id="contactColumn" prefWidth="141.5999755859375" text="Контакт" />
+        </columns>
+      </TableView>
+      <Button fx:id="okBtn" layoutX="300.0" layoutY="372.0" mnemonicParsing="false" onMouseClicked="#okClick" prefHeight="26.0" prefWidth="200.0" text="Применить">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Button>
+      <Button layoutX="10.0" layoutY="376.0" mnemonicParsing="false" onAction="#addNewClient" prefHeight="27.0" prefWidth="200.0" text="Добавление нового получателя" />
+   </children>
+</AnchorPane>

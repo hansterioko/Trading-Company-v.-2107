@@ -21,7 +21,7 @@ public class ProductRepository {
 
     private static final String BASE_URL = "http://" + RunApplication.ip_address + ":8080";
 
-    public static PagedDataDTO getAll(Number pageIndex, String isCheckExpirated, String search, String typeSorting, String sortBy){
+    public static PagedDataDTO<Product> getAll(Number pageIndex, String isCheckExpirated, String search, String typeSorting, String sortBy){
 
         Request request = new Request.Builder()
                 .url(BASE_URL + "/products?pageIndex=" + pageIndex + "&isChecked=" + isCheckExpirated + "&search="
